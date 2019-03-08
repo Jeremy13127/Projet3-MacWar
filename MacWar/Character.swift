@@ -36,14 +36,12 @@ class Character {
     
     let type: CharacterType
     let name: String
+    var score: Int = 100
     
     init(type: CharacterType, name: String) {
         self.type = type
         self.name = name
     }
     
-    func attack(){
-        //
-    }
     
 }

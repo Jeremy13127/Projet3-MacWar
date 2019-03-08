@@ -16,23 +16,30 @@ enum WeaponType {
     case chopped
 }
 
+extension WeaponType {
+    init?(choice: String) {
+        switch choice {
+        case "1":
+            self.sword = -10
+        case "2":
+            self.scepter = 20
+        case "2":
+            self.trampling = -5
+        case "3":
+            self.chopped = -20
+        default:
+            return nil
+        }
+    }
+}
+
 class Weapon {
     let damage: Int
     let type: WeaponType
     
-    init(type: WeaponType) {
-        switch type {
-        case .sword:
-            self.damage = -10
-        case .scepter:
-            self.damage = 20
-        case .trampling:
-            self.damage = -5
-        case .chopped:
-            self.damage = -20
-        default:
-            self.damage = 0
-        }
+    init(type: WeaponType, damage: Int) {
+        self.type = type
+        self.damage = damage
     }
 }
 */

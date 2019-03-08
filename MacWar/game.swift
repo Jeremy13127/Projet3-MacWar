@@ -14,6 +14,8 @@ class Game {
     
     var players: [Player] = []
     var playerNames: [String] = []
+    // var addPlayer: Player
+    
     
     // MARK: - Game logic
     
@@ -23,43 +25,56 @@ class Game {
     
     func setting() {
         
-        print("Bonjour le jeu se lance!")
+        print("Bonjour est bienvenue sur MacWar!")
 
         for playerIndex in 1..<3 { // Boucle x2 joueurs dans la partie
 
+            // Création du joueur de la partie
             let player = createPlayer(for: playerIndex)
 
             // Création des personnages de la partie
-            repeat {
-                player.addCharacter(character: Character(type: .colossus, name: "Toto"))
-            } while true
-            
-            players.append(player)
-            
-            print("Voici la liste des joueurs: ")
-            players.forEach { (player) in
-                print(player.name)
+            for playerIndex in 1..<4 { // Boucle x2 joueurs dans la partie
+                var addPlayer = createCharacter(player: player, playerIndex: playerIndex)
             }
+            
+            // Ajout du joueur ainsi que de ses personnages
+            players.append(addPlayer)
+            
         }
         
+        // Récapitulatif des équipes
+        statisticsPlayers()
+    
         play()
     }
     
     func play() {
         
-        print("Bonjour le jeu commence!")
+        print("La partie commence... Préparez votre armée MacWar!")
+        
+        // Boucle while tant que le joueur à au moins un personnage
+        
+        // Fonction attaque(joueur1, arme, joueur2)
+        
+        // Fonction qui vérifie si un des deux joueurs n'a plus de personnage
         
         end()
     }
     
     func end() {
         // Afficher le recap
+        statisticsPlayers()
         
-        print("Bonjour le jeu se termine!")
+        // Fonction qui félicite le vainqueur et qui propose de recommencer une partie ou pas
+        
+        print("Le jeu est terminé!")
     }
 
-    // MARK: - Helpers
+    
+    
+    // MARK: - Functions
 
+    // Fonction qui permet de créer un Joueur
     private func createPlayer(for index: Int) -> Player {
         var playerNameCounter = 0
         var playerName: String = ""
@@ -72,9 +87,9 @@ class Game {
             }
             
             if let _playerName = readLine() {
-                print("vous avez choisi comme nom de joueur: \(playerName)")
                 playerName = _playerName
-                playerNames.append(_playerName)
+                print("vous avez choisi comme nom de joueur: \(playerName)")
+                playerNames.append(playerName)
             } else {
                 playerName = ""
             }
@@ -84,4 +99,74 @@ class Game {
         
         return Player(name: playerName)
     }
+    
+    
+    // Fonction qui permet de créer les personnages du joueur
+    private func createCharacter(player: Player, playerIndex: Int) -> Player {
+        var characterNameCounter = 0
+        var characterName: String = ""
+        var characterType: String = ""
+        var type: CharacterType?
+        
+        repeat {
+            if characterNameCounter == 0 {
+                // Création des personnages de la partie
+                print("Choisissez un nom de personnage \(playerIndex):")
+            } else {
+                print("Merci d'entrer un nom de personnage non présent dans la partie")
+            }
+            
+            if let _characterName = readLine() {
+                characterName = _characterName
+                // print("vous avez choisi comme nom de personnage: \(characterName)")
+                
+                repeat {
+                    // Choix du type du personnage
+                    print("Choisissez le type du personnage \(characterName):")
+                    print("1 - Warrior")
+                    print("2 - Magus")
+                    print("3 - Colossus")
+                    print("4 - Dwarf")
+                    
+                    guard let choice = readLine() else { return }
+                    
+                    type = CharacterType(choice: choice)
+                    
+                } while type == nil
+                
+                if let type = type {
+                    characterType = type
+                }
+                
+            } else {
+                characterName = ""
+            }
+            
+            characterNameCounter += 1
+        } while characterName == ""
+        
+        let character1 = Character(type: characterType, name: characterName)
+        player.addCharacter(character: character1)
+        
+        return player
+    }
+    
+    
+    // Fonction qui permet d'afficher les statistiques des joueurs
+    private func statisticsPlayers() {
+        players.forEach { (player) in
+            // Affichage du nom du joueur
+            print("Récapitulatif de l'équipe de \(player.name) ")
+            for character in player.characters {
+                print(character.name)
+                if character.score == 0 {
+                    print("\(character.name) possède \(character.score) point de vie")
+                }
+                else{
+                    print("\(character.name) possède \(character.score) points de vie")
+                }
+            }
+        }
+    }
+    
 }
