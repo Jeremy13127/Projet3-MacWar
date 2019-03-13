@@ -8,7 +8,7 @@
 
 import Foundation
 
-/*
+
 enum WeaponType {
     case sword
     case scepter
@@ -16,30 +16,41 @@ enum WeaponType {
     case chopped
 }
 
-extension WeaponType {
-    init?(choice: String) {
-        switch choice {
-        case "1":
-            self.sword = -10
-        case "2":
-            self.scepter = 20
-        case "2":
-            self.trampling = -5
-        case "3":
-            self.chopped = -20
+//extension WeaponType {
+//    init?(choice: String) {
+//        switch choice {
+//        case "1":
+//            self = -10
+//        case "2":
+//            self = 20
+//        case "3":
+//            self = -5
+//        case "4":
+//            self = -20
+//        default:
+//            return nil
+//        }
+//    }
+//}
+
+class Weapon {
+    let type: WeaponType
+    let action: ActionType
+    
+    init(type: WeaponType) {
+        self.type = type
+        switch type {
+        case .chopped:
+            self.action = .damage(value: 100)
+        case .scepter:
+            self.action = .heal(value: 100)
         default:
-            return nil
+            self.action = .damage(value: 50)
         }
     }
 }
 
-class Weapon {
-    let damage: Int
-    let type: WeaponType
-    
-    init(type: WeaponType, damage: Int) {
-        self.type = type
-        self.damage = damage
-    }
+enum ActionType {
+    case damage(value: Int)
+    case heal(value: Int)
 }
-*/

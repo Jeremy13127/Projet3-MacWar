@@ -10,12 +10,11 @@ import Foundation
 
 // Créons des class par centaines...
 class Player {
-
+    
     // MARK: - Properties
-
+    
     let name: String
     private(set) var characters: [Character]
-    
     
     // MARK: - Init class
     
@@ -27,10 +26,7 @@ class Player {
     
     // MARK: - Functions
     
-    func addCharacter(character: Character) {
-        
-        characters.append(character)
-        
+    func initializeCharacters(characters: [Character]) {
+        self.characters = characters
     }
-    
 }
