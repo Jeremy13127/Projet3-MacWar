@@ -29,4 +29,10 @@ class Player {
     func initializeCharacters(characters: [Character]) {
         self.characters = characters
     }
+    
+    func tableOfCharacterCount() -> Int {
+        let count = self.characters.count
+        return count
+    }
+    
 }

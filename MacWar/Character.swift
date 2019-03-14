@@ -42,23 +42,40 @@ class Character {
         self.name = name
         self.type = type
         switch type {
-        case .colossus:
-            self.life = 50
-        case .dwarf:
+        case .warrior:
             self.life = 100
-        default:
-            self.life = 200
+        case .magus:
+            self.life = 50
+        case .colossus:
+            self.life = 150
+        case .dwarf:
+            self.life = 30
         }
     }
     
     func updateLife(with weapon: Weapon) {
         switch weapon.action {
         case .damage(value: let value):
-            // Gérer il faut que la value soit > a la vie restante?
-            self.life -= value
+            // Gérer il faut que la value soit > a la vie restante
+            // Si .damage est supérieur à self.life, alors self.life = 0
+            // Sinon self.life -= value
+            if value > self.life {
+                self.life = 0
+            }
+            if value > self.life {
+                self.life -= value
+            }
         case .heal(value: let value):
-            // Gérer il faut que la value soit > a la vie originale?
-            self.life += value
+            // Gérer il faut que la value soit > a la vie originale
+            // Si .heal est supérieur à self.life, alors self.life = 100
+            // Sinon self.life += value
+            if value > self.life {
+                self.life = 100
+            }
+            else {
+                self.life += value
+            }
+            
         }
     }
 }

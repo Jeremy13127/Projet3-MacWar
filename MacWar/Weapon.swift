@@ -40,12 +40,14 @@ class Weapon {
     init(type: WeaponType) {
         self.type = type
         switch type {
-        case .chopped:
-            self.action = .damage(value: 100)
+        case .sword:
+            self.action = .damage(value: 10)
         case .scepter:
-            self.action = .heal(value: 100)
-        default:
-            self.action = .damage(value: 50)
+            self.action = .heal(value: 20)
+        case .trampling:
+            self.action = .damage(value: 5)
+        case .chopped:
+            self.action = .heal(value: 20)
         }
     }
 }
