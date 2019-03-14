@@ -57,17 +57,35 @@ class Game {
         
         print("La partie commence... A vos postes soldats!")
         
+        var indexPlayer = 0
+        var indexEnnemy = 1
+        var counter = 0
+        
          // Boucle while tant que le joueur à au moins un personnage
          repeat {
-         
-         // On affiche les états de chacun des personnages
-         statisticsPlayers()
-         
-         // Fonction attaque(joueur1, arme, joueur2)
-         
+        
+            // On affiche les états de chacun des personnages
+            // statisticsPlayers()
             
-         } while checkLife(idEnnemy: <#T##Int#>)
-     
+            // Fonction attaque(joueur1, arme, joueur2)
+            let attackPlayer = players[indexPlayer].name
+            let defendPlayer = players[indexEnnemy].name
+            print("\(attackPlayer) attaque \(defendPlayer)")
+            
+            // Le joueur 0 sélectionne un de ses personnage
+            
+            // Le joueur 0 sélectione un des personnages adverse a attaquer
+            
+            // Le joueur 0 sélectionne une arme pour attaquer l'adversaire
+            
+            // Changement de joueur
+            indexPlayer = changePlayer(idPlayer: indexPlayer)
+            indexEnnemy = changeEnnemy(idEnnemy: indexEnnemy)
+            counter += 1
+         
+         } while counter < 10
+         // while checkLife(idEnnemy: indexEnnemy)
+        
         end()
     }
     
@@ -206,6 +224,40 @@ class Game {
         }
         print("////////////////////////////////////////////////////////////////")
         print("////////////////////////////////////////////////////////////////")
+    }
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Fonction qui permet de créer les personnages du joueur
+    private func changePlayer(idPlayer : Int) -> Int {
+        var id = idPlayer
+        // On vérifie si le joueur adverse possède encore au moins un personnage
+        if id == 0 {
+            id = 1
+        }
+        else{
+            id = 0
+        }
+        
+        return id
+    }
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Fonction qui permet de créer les personnages du joueur
+    private func changeEnnemy(idEnnemy : Int) -> Int {
+        var id = idEnnemy
+        // On vérifie si le joueur adverse possède encore au moins un personnage
+        if id == 0 {
+            id = 1
+        }
+        else{
+            id = 0
+        }
+        
+        return id
     }
     
     
