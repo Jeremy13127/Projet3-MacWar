@@ -30,9 +30,4 @@ class Player {
         self.characters = characters
     }
     
-    func tableOfCharacterCount() -> Int {
-        let count = self.characters.count
-        return count
-    }
-    
 }

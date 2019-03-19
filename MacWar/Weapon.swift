@@ -9,29 +9,29 @@
 import Foundation
 
 
-enum WeaponType {
-    case sword
-    case scepter
-    case trampling
-    case chopped
+enum WeaponType: Int {
+    case sword = 0
+    case scepter = 1
+    case trampling = 2
+    case chopped = 3
 }
 
-//extension WeaponType {
-//    init?(choice: String) {
-//        switch choice {
-//        case "1":
-//            self = -10
-//        case "2":
-//            self = 20
-//        case "3":
-//            self = -5
-//        case "4":
-//            self = -20
-//        default:
-//            return nil
-//        }
-//    }
-//}
+extension WeaponType {
+    init?(choice: Int) {
+        switch choice {
+        case 0:
+            self = .sword
+        case 1:
+            self = .scepter
+        case 2:
+            self = .trampling
+        case 3:
+            self = .chopped
+        default:
+            return nil
+        }
+    }
+}
 
 class Weapon {
     let type: WeaponType
@@ -47,7 +47,7 @@ class Weapon {
         case .trampling:
             self.action = .damage(value: 5)
         case .chopped:
-            self.action = .heal(value: 20)
+            self.action = .damage(value: 20)
         }
     }
 }

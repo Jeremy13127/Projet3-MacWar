@@ -37,42 +37,39 @@ class Character {
     let type: CharacterType
     let name: String
     var life: Int
+    var weapon: Weapon
     
     init(name: String, type: CharacterType) {
         self.name = name
         self.type = type
         switch type {
         case .warrior:
+            self.weapon = Weapon(type: .sword)
             self.life = 100
         case .magus:
+            self.weapon = Weapon(type: .scepter)
             self.life = 50
         case .colossus:
+            self.weapon = Weapon(type: .trampling)
             self.life = 150
         case .dwarf:
+            self.weapon = Weapon(type: .chopped)
             self.life = 30
         }
     }
     
-    func updateLife(with weapon: Weapon) {
-        switch weapon.action {
+    func updateLife(with action: ActionType) {
+        switch action {
         case .damage(value: let value):
-            // Gérer il faut que la value soit > a la vie restante
-            // Si .damage est supérieur à self.life, alors self.life = 0
-            // Sinon self.life -= value
             if value > self.life {
                 self.life = 0
-            }
-            if value > self.life {
+            } else {
                 self.life -= value
             }
         case .heal(value: let value):
-            // Gérer il faut que la value soit > a la vie originale
-            // Si .heal est supérieur à self.life, alors self.life = 100
-            // Sinon self.life += value
             if value > self.life {
                 self.life = 100
-            }
-            else {
+            } else {
                 self.life += value
             }
             
