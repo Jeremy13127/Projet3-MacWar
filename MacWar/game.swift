@@ -63,11 +63,11 @@ class Game {
             characterAttack = attacker.characters[attackerChoice()]
             if characterAttack.type == .magus && characterAttack.life > 0  {
                 characterCare = attacker.characters[careChoice()]
-                characterCare.updateLife(with: characterAttack.weapon.action)
+                characterCare.updateLife(with: characterAttack.weapon.action, characterType: characterCare.type)
                 print("\(characterAttack.name) soigne \(characterCare.name) qui possède désormais \(characterCare.life)")
             } else {
                 characterDefend = defender.characters[defenderChoice()]
-                characterDefend.updateLife(with: characterAttack.weapon.action)
+                characterDefend.updateLife(with: characterAttack.weapon.action, characterType: characterDefend.type)
                 print("\(characterAttack.name) attaque \(characterDefend.name) qui possède désormais \(characterDefend.life)")
             }
             players.swapAt(0, 1)
@@ -277,5 +277,21 @@ class Game {
             value = false
         }
         return value
+    }
+    
+    private func congrats() {
+        
+    }
+    
+    private func restart() {
+        
+    }
+    
+    private func newGame() {
+        
+    }
+    
+    private func exit() {
+        
     }
 }

@@ -30,5 +30,4 @@ class Player {
     func initializeCharacters(characters: [Character]) {
         self.characters = characters
     }
-    
 }

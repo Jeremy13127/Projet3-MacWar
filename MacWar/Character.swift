@@ -58,7 +58,7 @@ class Character {
         }
     }
     
-    func updateLife(with action: ActionType) {
+    func updateLife(with action: ActionType, characterType: CharacterType) {
         switch action {
         case .damage(value: let value):
             if value > self.life {
@@ -67,9 +67,9 @@ class Character {
                 self.life -= value
             }
         case .heal(value: let value):
-            if value > self.life {
-                /*
-                switch type {
+            let tempValue = value + self.life
+            if tempValue > self.life {
+                switch characterType {
                 case .warrior:
                     self.life = 100
                 case .magus:
@@ -79,12 +79,9 @@ class Character {
                 case .dwarf:
                     self.life = 30
                 }
-                */
-                self.life = 100
             } else {
                 self.life += value
             }
-            
         }
     }
 }
