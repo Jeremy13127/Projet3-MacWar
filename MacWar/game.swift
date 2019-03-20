@@ -17,6 +17,7 @@ class Game {
     
     private var players: [Player] = []
     private var playerNames: [String] = []
+    private var characterNames: [String] = []
     
     // MARK: - Start
     
@@ -30,6 +31,7 @@ class Game {
     /// This function handle the configuration for the players and their characters.
     private func settings() {
         print("Bonjour est bienvenue sur MacWar!")
+        print("")
         for playerIndex in 0..<Game.maxPlayerCount {
             let player = createPlayer(for: playerIndex)
             player.initializeCharacters(characters: createCharacters())
@@ -40,32 +42,38 @@ class Game {
     
     
     private func play() {
+        print("")
         print("////////////////////////////////////////////////////////////////")
         print("////////////////////////////////////////////////////////////////")
         print("           La partie commence... A vos postes soldats!           ")
         
-        guard let attacker = players.first, let defender = players.last else {
-            fatalError("We should have 2 players at this time")
-        }
-        
         var counter = 0
         var characterAttack: Character
+        var characterCare: Character
         var characterDefend: Character
+        var next: Bool
         
         repeat {
+            guard let attacker = players.first, let defender = players.last else {
+                fatalError("We should have 2 players at this time")
+            }
             print("")
             print("C'est à \(attacker.name) de jouer")
             statisticsPlayers()
             characterAttack = attacker.characters[attackerChoice()]
-            characterDefend = defender.characters[defenderChoice()]
-            characterDefend.updateLife(with: characterAttack.weapon.action)
-            print("\(characterAttack.name) attaque \(characterDefend.name) qui possède désormais \(characterDefend.life)")
-            print("\(players[0].name) - \(players[1].name)")
+            if characterAttack.type == .magus && characterAttack.life > 0  {
+                characterCare = attacker.characters[careChoice()]
+                characterCare.updateLife(with: characterAttack.weapon.action)
+                print("\(characterAttack.name) soigne \(characterCare.name) qui possède désormais \(characterCare.life)")
+            } else {
+                characterDefend = defender.characters[defenderChoice()]
+                characterDefend.updateLife(with: characterAttack.weapon.action)
+                print("\(characterAttack.name) attaque \(characterDefend.name) qui possède désormais \(characterDefend.life)")
+            }
             players.swapAt(0, 1)
-            print("\(players[0].name) - \(players[1].name)")
             counter += 1
-        } while counter < 10
-            // while true /// Tant que pour chacun des 2  joueurs, ils ont au moins un chracter avec une vie > 0 && ce ne sont pas tous les 2 des mages -> egalité.
+            next = checkLife(defenderCharacters: defender.characters)
+        } while next == true
         
         end()
     }
@@ -79,7 +87,7 @@ class Game {
     
     private func createPlayer(for index: Int) -> Player {
         var playerNameCounter = 0
-        var playerName: String = ""
+        var playerName: String
         repeat {
             print("////////////////////////////////////////////////////////////////")
             print("////////////////////////////////////////////////////////////////")
@@ -87,33 +95,30 @@ class Game {
             if playerNameCounter == 0 {
                 print("Choisissez un nom de joueur :")
             } else {
-                print("Merci d'entrer un nom valide")
+                print("ERREUR ### Merci d'entrer un nom valide")
             }
-            
             if let _playerName = readLine() {
                 playerName = _playerName
-                playerNames.append(playerName)
             } else {
                 playerName = ""
             }
-            
             playerNameCounter += 1
-        } while playerName == "" && !playerNames.contains(playerName)
-        
+        } while playerName == "" || playerNames.contains(playerName)
+        playerNames.append(playerName)
         return Player(name: playerName)
     }
     
     private func createCharacters() -> [Character] {
         var characters: [Character] = []
         print("                   CREATION DES PERSONNAGES                      ")
-        for _ in 0..<Game.maxCharacterCount {
-            let character = createCharacter()
+        for index in 0..<Game.maxCharacterCount {
+            let character = createCharacter(for: index)
             characters.append(character)
         }
         return characters
     }
     
-    private func createCharacter() -> Character {
+    private func createCharacter(for index: Int) -> Character {
         var characterNameCounter = 0
         var characterName = ""
         var _typeInput = ""
@@ -121,9 +126,9 @@ class Game {
         
         repeat {
             if characterNameCounter == 0 {
-                print("Choisissez un nom de personnage :")
+                print("Choisissez un nom de personnage \(index) :")
             } else {
-                print("Merci d'entrer un nom ou type valide")
+                print("ERREUR ### Merci d'entrer un nom ou type valide")
             }
             
             if let nameInput = readLine() {
@@ -147,8 +152,8 @@ class Game {
             }
             
             characterNameCounter += 1
-        } while characterType == nil && characterName == "" && !playerNames.contains(characterName)
-        
+        } while characterType == nil || characterName == "" || characterNames.contains(characterName)
+        characterNames.append(characterName)
         return Character(name: characterName, type: characterType!)
     }
     
@@ -174,8 +179,14 @@ class Game {
     private func attackerChoice() -> Int {
         var _indexAttacker = ""
         var indexAttacker: Int
+        var characterIdCounter = 0
         repeat {
-            print("Choisissez l'id de votre personnage pour attaquer :")
+            if characterIdCounter == 0 {
+                print("Choisissez l'id de votre personnage pour attaquer :")
+            } else {
+                print("ERREUR ### Merci d'entrer un id valide")
+            }
+            
             if let attackerChoice = readLine(){
                 _indexAttacker = attackerChoice
             }
@@ -189,15 +200,49 @@ class Game {
             default:
                 indexAttacker = 3
             }
+            characterIdCounter += 1
         } while indexAttacker == 3
         return indexAttacker
+    }
+    
+    private func careChoice() -> Int {
+        var _indexCare = ""
+        var indexCare: Int
+        var characterIdCounter = 0
+        repeat {
+            if characterIdCounter == 0 {
+                print("Choisissez l'id de votre personnage à soigner :")
+            } else {
+                print("ERREUR ### Merci d'entrer un id valide")
+            }
+            if let careChoice = readLine(){
+                _indexCare = careChoice
+            }
+            switch _indexCare {
+            case "0":
+                indexCare = 0
+            case "1":
+                indexCare = 1
+            case "2":
+                indexCare = 2
+            default:
+                indexCare = 3
+            }
+            characterIdCounter += 1
+        } while indexCare == 3
+        return indexCare
     }
     
     private func defenderChoice() -> Int {
         var _indexDefender = ""
         var indexDefender: Int
+        var characterIdCounter = 0
         repeat {
-            print("Choisissez l'id du personnage à attaquer :")
+            if characterIdCounter == 0 {
+                print("Choisissez l'id du personnage à attaquer :")
+            } else {
+                print("ERREUR ### Merci d'entrer un id valide")
+            }
             if let defenderChoice = readLine(){
                 _indexDefender = defenderChoice
             }
@@ -211,13 +256,26 @@ class Game {
             default:
                 indexDefender = 3
             }
+            characterIdCounter += 1
         } while indexDefender == 3
         return indexDefender
     }
     
-    private func checkLife(characters : [Character]) -> Int {
+    private func checkLife(defenderCharacters: [Character]) -> Bool {
         var life = 0
-        life = characters.count
-        return life
+        var value: Bool
+        for character in defenderCharacters {
+            if character.type == .magus {
+                life = 0
+            } else {
+                life += character.life
+            }
+        }
+        if life != 0 {
+            value = true
+        } else {
+            value = false
+        }
+        return value
     }
 }

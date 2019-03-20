@@ -15,6 +15,7 @@ class Player {
     
     let name: String
     private(set) var characters: [Character]
+    var score = 0
     
     // MARK: - Init class
     

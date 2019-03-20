@@ -68,6 +68,18 @@ class Character {
             }
         case .heal(value: let value):
             if value > self.life {
+                /*
+                switch type {
+                case .warrior:
+                    self.life = 100
+                case .magus:
+                    self.life = 50
+                case .colossus:
+                    self.life = 150
+                case .dwarf:
+                    self.life = 30
+                }
+                */
                 self.life = 100
             } else {
                 self.life += value
