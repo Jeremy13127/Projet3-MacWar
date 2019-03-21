@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Darwin
 
 class Game {
     
@@ -31,7 +32,6 @@ class Game {
     /// This function handle the configuration for the players and their characters.
     private func settings() {
         print("Bonjour est bienvenue sur MacWar!")
-        print("")
         for playerIndex in 0..<Game.maxPlayerCount {
             let player = createPlayer(for: playerIndex)
             player.initializeCharacters(characters: createCharacters())
@@ -52,6 +52,8 @@ class Game {
         var characterCare: Character
         var characterDefend: Character
         var next: Bool
+        var lastAttacker: Player
+        var lastDefender: Player
         
         repeat {
             guard let attacker = players.first, let defender = players.last else {
@@ -73,14 +75,46 @@ class Game {
             players.swapAt(0, 1)
             counter += 1
             next = checkLife(defenderCharacters: defender.characters)
+            lastAttacker = attacker
+            lastDefender = defender
         } while next == true
         
-        end()
+        end(attacker: lastAttacker, defender: lastDefender)
     }
     
-    private func end() {
+    private func end(attacker: Player, defender: Player) {
+        var _userChoice = ""
+        var again = true
+        var choiceCounter = 0
+        
+        congrats(playerWin: attacker, playerLose: defender)
         statisticsPlayers()
-        print("Le jeu est terminé!")
+        repeat {
+            print("Vous souhaitez : ")
+            print("Recommencer une partie ? Tapez 1")
+            print("Créer une nouvelle partie ? Tapez 2")
+            print("Quitter le jeu ? Tapez 3")
+            if choiceCounter == 0 {
+                print("Votre choix :")
+            } else {
+                print("ERREUR ### Merci de choisir une option valide")
+            }
+            if let readChoice = readLine(){
+                _userChoice = readChoice
+            }
+            switch _userChoice {
+            case "1":
+                restart()
+            case "2":
+                newGame()
+            case "3":
+                print("On quitte le jeu")
+                exit(0)
+            default:
+                again = false
+            }
+            choiceCounter += 1
+        } while again == false
     }
     
     // MARK: - Helpers
@@ -89,6 +123,7 @@ class Game {
         var playerNameCounter = 0
         var playerName: String
         repeat {
+            print("")
             print("////////////////////////////////////////////////////////////////")
             print("////////////////////////////////////////////////////////////////")
             print("                   CREATION DU JOUEUR \(index)                   ")
@@ -279,19 +314,36 @@ class Game {
         return value
     }
     
-    private func congrats() {
-        
+    private func congrats(playerWin: Player, playerLose: Player) {
+        print("")
+        print("La partie est terminée!")
+        print("Félicitation à \(playerWin.name)! Quelle magnifique victoire!!")
+        playerWin.score += 1
+        print("\(playerWin.name) : \(playerWin.score) - \(playerLose.name) : \(playerLose.score)")
     }
     
     private func restart() {
-        
+        players.forEach { (player) in
+            for character in player.characters {
+                switch character.type {
+                case .warrior:
+                    character.life = 100
+                case .magus:
+                    character.life = 50
+                case .colossus:
+                    character.life = 150
+                case .dwarf:
+                    character.life = 30
+                }
+            }
+        }
+        play()
     }
     
     private func newGame() {
-        
-    }
-    
-    private func exit() {
-        
+        players.removeAll()
+        playerNames.removeAll()
+        characterNames.removeAll()
+        settings()
     }
 }
