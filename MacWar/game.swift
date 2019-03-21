@@ -19,6 +19,7 @@ class Game {
     private var players: [Player] = []
     private var playerNames: [String] = []
     private var characterNames: [String] = []
+    private var counterPlay = 0
     
     // MARK: - Start
     
@@ -45,7 +46,12 @@ class Game {
         print("")
         print("////////////////////////////////////////////////////////////////")
         print("////////////////////////////////////////////////////////////////")
-        print("           La partie commence... A vos postes soldats!           ")
+        if counterPlay == 0 {
+            print("           La partie commence... A vos postes soldats!           ")
+        } else {
+            print("           La partie recommence... A vos postes soldats!           ")
+            print("\(players[0].name) : \(players[0].score) - \(players[1].name) : \(players[1].score)")
+        }
         
         var counter = 0
         var characterAttack: Character
@@ -62,21 +68,36 @@ class Game {
             print("")
             print("C'est à \(attacker.name) de jouer")
             statisticsPlayers()
-            characterAttack = attacker.characters[attackerChoice()]
+            
+            var characterLifeAttacker: Int
+            repeat {
+                characterAttack = attacker.characters[attackerChoice()]
+                characterLifeAttacker = characterAttack.life
+            } while characterLifeAttacker == 0
+            
             if characterAttack.type == .magus && characterAttack.life > 0  {
-                characterCare = attacker.characters[careChoice()]
+                var characterLifeCare: Int
+                repeat {
+                    characterCare = attacker.characters[careChoice()]
+                    characterLifeCare = characterAttack.life
+                } while characterLifeCare == 0
                 characterCare.updateLife(with: characterAttack.weapon.action, characterType: characterCare.type)
                 print("\(characterAttack.name) soigne \(characterCare.name) qui possède désormais \(characterCare.life)")
             } else {
-                characterDefend = defender.characters[defenderChoice()]
+                var characterLifeDefender: Int
+                repeat {
+                    characterDefend = defender.characters[defenderChoice()]
+                    characterLifeDefender = characterAttack.life
+                } while characterLifeDefender == 0
                 characterDefend.updateLife(with: characterAttack.weapon.action, characterType: characterDefend.type)
                 print("\(characterAttack.name) attaque \(characterDefend.name) qui possède désormais \(characterDefend.life)")
             }
-            players.swapAt(0, 1)
+            
             counter += 1
             next = checkLife(defenderCharacters: defender.characters)
             lastAttacker = attacker
             lastDefender = defender
+            players.swapAt(0, 1)
         } while next == true
         
         end(attacker: lastAttacker, defender: lastDefender)
@@ -316,6 +337,9 @@ class Game {
     
     private func congrats(playerWin: Player, playerLose: Player) {
         print("")
+        print("")
+        print("////////////////////////////////////////////////////////////////")
+        print("////////////////////////////////////////////////////////////////")
         print("La partie est terminée!")
         print("Félicitation à \(playerWin.name)! Quelle magnifique victoire!!")
         playerWin.score += 1
@@ -337,6 +361,7 @@ class Game {
                 }
             }
         }
+        counterPlay += 1
         play()
     }
     
