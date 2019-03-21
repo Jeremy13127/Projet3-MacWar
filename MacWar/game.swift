@@ -77,17 +77,21 @@ class Game {
             
             if characterAttack.type == .magus && characterAttack.life > 0  {
                 var characterLifeCare: Int
+                var isMagus = false
                 repeat {
                     characterCare = attacker.characters[careChoice()]
-                    characterLifeCare = characterAttack.life
-                } while characterLifeCare == 0
+                    characterLifeCare = characterCare.life
+                    if characterCare.type == .magus {
+                        isMagus = true
+                    }
+                } while characterLifeCare == 0 || isMagus == true
                 characterCare.updateLife(with: characterAttack.weapon.action, characterType: characterCare.type)
                 print("\(characterAttack.name) soigne \(characterCare.name) qui possède désormais \(characterCare.life)")
             } else {
                 var characterLifeDefender: Int
                 repeat {
                     characterDefend = defender.characters[defenderChoice()]
-                    characterLifeDefender = characterAttack.life
+                    characterLifeDefender = characterDefend.life
                 } while characterLifeDefender == 0
                 characterDefend.updateLife(with: characterAttack.weapon.action, characterType: characterDefend.type)
                 print("\(characterAttack.name) attaque \(characterDefend.name) qui possède désormais \(characterDefend.life)")
@@ -322,7 +326,7 @@ class Game {
         var value: Bool
         for character in defenderCharacters {
             if character.type == .magus {
-                life = 0
+                life += 0
             } else {
                 life += character.life
             }

@@ -68,7 +68,18 @@ class Character {
             }
         case .heal(value: let value):
             let tempValue = value + self.life
-            if tempValue > self.life {
+            let initLife: Int
+            switch characterType {
+            case .warrior:
+                initLife = 100
+            case .magus:
+                initLife = 50
+            case .colossus:
+                initLife = 150
+            case .dwarf:
+                initLife = 30
+            }
+            if tempValue >= initLife {
                 switch characterType {
                 case .warrior:
                     self.life = 100
@@ -79,8 +90,10 @@ class Character {
                 case .dwarf:
                     self.life = 30
                 }
-            } else {
+            } else if self.life > 0 && tempValue < initLife {
                 self.life += value
+            } else {
+                self.life = 0
             }
         }
     }
