@@ -58,15 +58,25 @@ class Character {
         }
     }
     
-    func updateLife(with action: ActionType, characterType: CharacterType) {
+    func updateLife(with action: ActionType, characterType: CharacterType, bonus: Int) {
         switch action {
-        case .damage(value: let value):
+        case .damage(value: var value):
+            if bonus == 0 {
+                value *= 2
+            } else if bonus == 1{
+                value /= 2
+            }
             if value > self.life {
                 self.life = 0
             } else {
                 self.life -= value
             }
-        case .heal(value: let value):
+        case .heal(value: var value):
+            if bonus == 0 {
+                value *= 2
+            } else if bonus == 1{
+                value /= 2
+            }
             let tempValue = value + self.life
             let initLife: Int
             switch characterType {

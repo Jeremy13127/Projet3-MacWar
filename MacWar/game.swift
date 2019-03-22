@@ -75,6 +75,8 @@ class Game {
                 characterLifeAttacker = characterAttack.life
             } while characterLifeAttacker == 0
             
+            let bonus = randomBonus()
+            
             if characterAttack.type == .magus && characterAttack.life > 0  {
                 var characterLifeCare: Int
                 var isMagus = false
@@ -85,7 +87,7 @@ class Game {
                         isMagus = true
                     }
                 } while characterLifeCare == 0 || isMagus == true
-                characterCare.updateLife(with: characterAttack.weapon.action, characterType: characterCare.type)
+                characterCare.updateLife(with: characterAttack.weapon.action, characterType: characterCare.type, bonus: bonus)
                 print("\(characterAttack.name) soigne \(characterCare.name) qui possède désormais \(characterCare.life)")
             } else {
                 var characterLifeDefender: Int
@@ -93,7 +95,7 @@ class Game {
                     characterDefend = defender.characters[defenderChoice()]
                     characterLifeDefender = characterDefend.life
                 } while characterLifeDefender == 0
-                characterDefend.updateLife(with: characterAttack.weapon.action, characterType: characterDefend.type)
+                characterDefend.updateLife(with: characterAttack.weapon.action, characterType: characterDefend.type, bonus: bonus)
                 print("\(characterAttack.name) attaque \(characterDefend.name) qui possède désormais \(characterDefend.life)")
             }
             
@@ -375,4 +377,16 @@ class Game {
         characterNames.removeAll()
         settings()
     }
+    
+    private func randomBonus() -> Int {
+        // INTEGRER BONUS QUI DOUBLE LES POINTS D'ATTAQUE-GUERISON OU BIEN DIVISE PAR 2 CES MEMES POINTS
+        let bonus = Int.random(in: 0..<5)
+        if bonus == 0 {
+            print("Les Points d'attaque ou de guérison sont doublés!!")
+        } else if bonus == 1{
+            print("Les Points d'attaque ou de guérison sont divisés par 2!!")
+        }
+        return bonus
+    }
+    
 }
