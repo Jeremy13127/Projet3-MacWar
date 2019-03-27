@@ -57,7 +57,6 @@ class Game {
         var characterAttack: Character
         var characterCare: Character
         var characterDefend: Character
-        var next: Bool
         var lastAttacker: Player
         var lastDefender: Player
         
@@ -69,52 +68,44 @@ class Game {
             print("C'est à \(attacker.name) de jouer")
             statisticsPlayers()
             
-            var characterLifeAttacker: Int
             repeat {
-                characterAttack = attacker.characters[attackerChoice()]
-                characterLifeAttacker = characterAttack.life
-            } while characterLifeAttacker == 0
+                let index = chooseCharacterIndex(who: 0)
+                characterAttack = chooseCharacter(at: index, from: attacker.characters)
+            } while !characterAttack.isAlive
             
             let bonus = randomBonus()
             
             if characterAttack.type == .magus && characterAttack.life > 0  {
-                var characterLifeCare: Int
-                var isMagus = false
                 repeat {
-                    characterCare = attacker.characters[careChoice()]
-                    characterLifeCare = characterCare.life
-                    if characterCare.type == .magus {
-                        isMagus = true
-                    }
-                } while characterLifeCare == 0 || isMagus == true
+                    let index = chooseCharacterIndex(who: 1)
+                    characterCare = chooseCharacter(at: index, from: attacker.characters)
+                } while !characterCare.isAlive && characterCare.type == .magus
                 characterCare.updateLife(with: characterAttack.weapon.action, characterType: characterCare.type, bonus: bonus)
                 print("\(characterAttack.name) soigne \(characterCare.name) qui possède désormais \(characterCare.life)")
             } else {
-                var characterLifeDefender: Int
                 repeat {
-                    characterDefend = defender.characters[defenderChoice()]
-                    characterLifeDefender = characterDefend.life
-                } while characterLifeDefender == 0
+                    let index = chooseCharacterIndex(who: 2)
+                    characterDefend = chooseCharacter(at: index, from: defender.characters)
+                } while !characterDefend.isAlive
                 characterDefend.updateLife(with: characterAttack.weapon.action, characterType: characterDefend.type, bonus: bonus)
                 print("\(characterAttack.name) attaque \(characterDefend.name) qui possède désormais \(characterDefend.life)")
             }
             
             counter += 1
-            next = checkLife(defenderCharacters: defender.characters)
             lastAttacker = attacker
             lastDefender = defender
             players.swapAt(0, 1)
-        } while next == true
+        } while findAliveCharacter(in: lastDefender.characters)
         
-        end(attacker: lastAttacker, defender: lastDefender)
+        launchEndGame(with: lastAttacker, and: lastDefender)
     }
     
-    private func end(attacker: Player, defender: Player) {
+    private func launchEndGame(with attacker: Player, and defender: Player) {
         var _userChoice = ""
         var again = true
         var choiceCounter = 0
         
-        congrats(playerWin: attacker, playerLose: defender)
+        congrats(for: attacker, and: defender)
         statisticsPlayers()
         repeat {
             print("Vous souhaitez : ")
@@ -238,110 +229,53 @@ class Game {
         print("////////////////////////////////////////////////////////////////")
     }
     
-    private func attackerChoice() -> Int {
-        var _indexAttacker = ""
-        var indexAttacker: Int
+    private func chooseCharacterIndex(who character: Int) -> Int {
+        var _index = ""
+        var index: Int
         var characterIdCounter = 0
         repeat {
-            if characterIdCounter == 0 {
+            if characterIdCounter == 0 && character == 0 {
                 print("Choisissez l'id de votre personnage pour attaquer :")
-            } else {
-                print("ERREUR ### Merci d'entrer un id valide")
-            }
-            
-            if let attackerChoice = readLine(){
-                _indexAttacker = attackerChoice
-            }
-            switch _indexAttacker {
-            case "0":
-                indexAttacker = 0
-            case "1":
-                indexAttacker = 1
-            case "2":
-                indexAttacker = 2
-            default:
-                indexAttacker = 3
-            }
-            characterIdCounter += 1
-        } while indexAttacker == 3
-        return indexAttacker
-    }
-    
-    private func careChoice() -> Int {
-        var _indexCare = ""
-        var indexCare: Int
-        var characterIdCounter = 0
-        repeat {
-            if characterIdCounter == 0 {
+            } else if characterIdCounter == 0 && character == 1 {
                 print("Choisissez l'id de votre personnage à soigner :")
-            } else {
-                print("ERREUR ### Merci d'entrer un id valide")
-            }
-            if let careChoice = readLine(){
-                _indexCare = careChoice
-            }
-            switch _indexCare {
-            case "0":
-                indexCare = 0
-            case "1":
-                indexCare = 1
-            case "2":
-                indexCare = 2
-            default:
-                indexCare = 3
-            }
-            characterIdCounter += 1
-        } while indexCare == 3
-        return indexCare
-    }
-    
-    private func defenderChoice() -> Int {
-        var _indexDefender = ""
-        var indexDefender: Int
-        var characterIdCounter = 0
-        repeat {
-            if characterIdCounter == 0 {
+            } else if characterIdCounter == 0 && character == 2 {
                 print("Choisissez l'id du personnage à attaquer :")
             } else {
                 print("ERREUR ### Merci d'entrer un id valide")
             }
-            if let defenderChoice = readLine(){
-                _indexDefender = defenderChoice
+            
+            if let Choice = readLine(){
+                _index = Choice
             }
-            switch _indexDefender {
+            switch _index {
             case "0":
-                indexDefender = 0
+                index = 0
             case "1":
-                indexDefender = 1
+                index = 1
             case "2":
-                indexDefender = 2
+                index = 2
             default:
-                indexDefender = 3
+                index = 3
             }
             characterIdCounter += 1
-        } while indexDefender == 3
-        return indexDefender
+        } while index == 3
+        return index
     }
     
-    private func checkLife(defenderCharacters: [Character]) -> Bool {
-        var life = 0
-        var value: Bool
-        for character in defenderCharacters {
-            if character.type == .magus {
-                life += 0
-            } else {
-                life += character.life
-            }
+    private func chooseCharacter(at index: Int, from characters: [Character]) -> Character {
+        guard index < characters.count else {
+            fatalError("Index out of range")
         }
-        if life != 0 {
-            value = true
-        } else {
-            value = false
-        }
-        return value
+        return characters[index]
     }
     
-    private func congrats(playerWin: Player, playerLose: Player) {
+    private func findAliveCharacter(in characters: [Character]) -> Bool {
+        return characters.contains(where: { charater in
+            return charater.type != .magus && charater.life > 0
+        })
+    }
+    
+    private func congrats(for playerWin: Player, and playerLose: Player) {
         print("")
         print("")
         print("////////////////////////////////////////////////////////////////")
@@ -359,9 +293,9 @@ class Game {
                 case .warrior:
                     character.life = 100
                 case .magus:
-                    character.life = 50
+                    character.life = 25
                 case .colossus:
-                    character.life = 150
+                    character.life = 50
                 case .dwarf:
                     character.life = 30
                 }

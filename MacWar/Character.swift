@@ -39,6 +39,10 @@ class Character {
     var life: Int
     var weapon: Weapon
     
+    var isAlive: Bool {
+        return self.life > 0
+    }
+    
     init(name: String, type: CharacterType) {
         self.name = name
         self.type = type
@@ -48,10 +52,10 @@ class Character {
             self.life = 100
         case .magus:
             self.weapon = Weapon(type: .scepter)
-            self.life = 50
+            self.life = 25
         case .colossus:
             self.weapon = Weapon(type: .trampling)
-            self.life = 150
+            self.life = 50
         case .dwarf:
             self.weapon = Weapon(type: .chopped)
             self.life = 30
@@ -83,9 +87,9 @@ class Character {
             case .warrior:
                 initLife = 100
             case .magus:
-                initLife = 50
+                initLife = 25
             case .colossus:
-                initLife = 150
+                initLife = 50
             case .dwarf:
                 initLife = 30
             }
@@ -94,9 +98,9 @@ class Character {
                 case .warrior:
                     self.life = 100
                 case .magus:
-                    self.life = 50
+                    self.life = 25
                 case .colossus:
-                    self.life = 150
+                    self.life = 50
                 case .dwarf:
                     self.life = 30
                 }
